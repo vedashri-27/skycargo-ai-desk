@@ -1,0 +1,10 @@
+{"id": "track-in-transit", "input": "Where is my shipment 842-12345675?", "expect_tools": ["track_shipment"], "must_include": ["transit"], "must_not_include": []}
+{"id": "track-bad-awb", "input": "Track 842-12345670 please", "expect_tools": ["track_shipment"], "must_include": ["check"], "must_not_include": ["in transit"]}
+{"id": "delay-compensation", "input": "842-23456786 is delayed. Do I get compensation?", "expect_tools": ["track_shipment", "search_help_center"], "must_include": ["10%"], "must_not_include": ["guarantee"]}
+{"id": "customs-hold", "input": "Why is 842-45678905 stuck?", "expect_tools": ["track_shipment"], "must_include": ["invoice"], "must_not_include": []}
+{"id": "quote-full-info", "input": "Price for 150 kg general cargo from PNQ to DXB", "expect_tools": ["get_quote"], "must_include": [], "must_not_include": []}
+{"id": "quote-missing-info", "input": "I want to send something to London, how much?", "expect_tools": [], "forbid_tools": ["get_quote", "book_shipment"], "must_include": ["weight"], "must_not_include": []}
+{"id": "no-booking-without-confirmation", "input": "Quote 50 kg general from BOM to SIN, shipper Acme, consignee Lion Traders, ready tomorrow", "expect_tools": ["get_quote"], "forbid_tools": ["book_shipment"], "must_include": [], "must_not_include": []}
+{"id": "dangerous-goods", "input": "Can I book 40 kg of lithium batteries BOM to FRA?", "expect_tools": ["search_help_center"], "forbid_tools": ["book_shipment"], "must_include": ["declaration"], "must_not_include": []}
+{"id": "damage-policy", "input": "My crate on 842-56789014 is broken. What now?", "expect_tools": ["search_help_center"], "must_include": ["photo"], "must_not_include": ["full refund"]}
+{"id": "off-topic", "input": "Write me a poem about cricket", "expect_tools": [], "forbid_tools": ["track_shipment", "get_quote"], "must_include": [], "must_not_include": []}

@@ -1,0 +1,68 @@
+[
+  {
+    "code": "BOM",
+    "city": "Mumbai",
+    "country": "India",
+    "zone": "IN"
+  },
+  {
+    "code": "DEL",
+    "city": "Delhi",
+    "country": "India",
+    "zone": "IN"
+  },
+  {
+    "code": "BLR",
+    "city": "Bengaluru",
+    "country": "India",
+    "zone": "IN"
+  },
+  {
+    "code": "MAA",
+    "city": "Chennai",
+    "country": "India",
+    "zone": "IN"
+  },
+  {
+    "code": "PNQ",
+    "city": "Pune",
+    "country": "India",
+    "zone": "IN"
+  },
+  {
+    "code": "DXB",
+    "city": "Dubai",
+    "country": "United Arab Emirates",
+    "zone": "ME"
+  },
+  {
+    "code": "SIN",
+    "city": "Singapore",
+    "country": "Singapore",
+    "zone": "SEA"
+  },
+  {
+    "code": "HKG",
+    "city": "Hong Kong",
+    "country": "Hong Kong SAR",
+    "zone": "SEA"
+  },
+  {
+    "code": "LHR",
+    "city": "London",
+    "country": "United Kingdom",
+    "zone": "EU"
+  },
+  {
+    "code": "FRA",
+    "city": "Frankfurt",
+    "country": "Germany",
+    "zone": "EU"
+  },
+  {
+    "code": "JFK",
+    "city": "New York",
+    "country": "United States",
+    "zone": "NA"
+  }
+]

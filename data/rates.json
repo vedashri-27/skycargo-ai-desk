@@ -1,0 +1,56 @@
+{
+  "currency": "INR",
+  "volumetric_divisor": 6000,
+  "min_charge": 2500,
+  "fuel_surcharge_per_kg": 22,
+  "security_fee_per_kg": 6,
+  "gst_rate_domestic": 0.18,
+  "per_kg": {
+    "IN-IN": 68,
+    "IN-ME": 145,
+    "IN-SEA": 170,
+    "IN-EU": 260,
+    "IN-NA": 340,
+    "ME-SEA": 190,
+    "ME-EU": 210,
+    "ME-NA": 300,
+    "SEA-EU": 280,
+    "SEA-NA": 320,
+    "EU-NA": 230,
+    "ME-ME": 90,
+    "SEA-SEA": 110,
+    "EU-EU": 120,
+    "NA-NA": 150
+  },
+  "transit_days": {
+    "IN-IN": 1,
+    "IN-ME": 2,
+    "IN-SEA": 2,
+    "IN-EU": 3,
+    "IN-NA": 4,
+    "ME-SEA": 2,
+    "ME-EU": 2,
+    "ME-NA": 3,
+    "SEA-EU": 3,
+    "SEA-NA": 3,
+    "EU-NA": 2,
+    "ME-ME": 1,
+    "SEA-SEA": 1,
+    "EU-EU": 1,
+    "NA-NA": 1
+  },
+  "cargo_multipliers": {
+    "general": 1.0,
+    "perishable": 1.35,
+    "pharma": 1.6,
+    "dangerous_goods": 1.9,
+    "valuable": 2.2
+  },
+  "max_weight_kg": {
+    "general": 5000,
+    "perishable": 3000,
+    "pharma": 2000,
+    "dangerous_goods": 1000,
+    "valuable": 500
+  }
+}

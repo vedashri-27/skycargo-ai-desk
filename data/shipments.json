@@ -1,0 +1,197 @@
+[
+  {
+    "awb": "842-12345675",
+    "origin": "PNQ",
+    "destination": "DXB",
+    "cargo_type": "general",
+    "pieces": 4,
+    "weight_kg": 120,
+    "shipper": "Deccan Auto Parts Pvt Ltd",
+    "consignee": "Gulf Motors Trading LLC",
+    "status": "in_transit",
+    "eta": "2026-09-26T09:30:00+04:00",
+    "flight": "SC 441",
+    "events": [
+      {
+        "timestamp": "2026-09-23T10:15:00+05:30",
+        "code": "RCS",
+        "location": "PNQ",
+        "note": "Received from shipper, 4 pcs 120 kg"
+      },
+      {
+        "timestamp": "2026-09-23T22:40:00+05:30",
+        "code": "MAN",
+        "location": "BOM",
+        "note": "Manifested on SC 441 via Mumbai"
+      },
+      {
+        "timestamp": "2026-09-24T03:05:00+05:30",
+        "code": "DEP",
+        "location": "BOM",
+        "note": "Departed Mumbai"
+      }
+    ]
+  },
+  {
+    "awb": "842-23456786",
+    "origin": "BOM",
+    "destination": "LHR",
+    "cargo_type": "pharma",
+    "pieces": 10,
+    "weight_kg": 340,
+    "shipper": "Western Ghats Pharma Ltd",
+    "consignee": "Thames Health Distribution",
+    "status": "delayed",
+    "eta": "2026-09-27T14:00:00+01:00",
+    "flight": "SC 118",
+    "delay_reason": "Offloaded due to aircraft capacity; rebooked on next flight",
+    "events": [
+      {
+        "timestamp": "2026-09-22T08:00:00+05:30",
+        "code": "RCS",
+        "location": "BOM",
+        "note": "Received, cold chain 2-8°C verified"
+      },
+      {
+        "timestamp": "2026-09-23T01:20:00+05:30",
+        "code": "OFLD",
+        "location": "BOM",
+        "note": "Offloaded from SC 116, capacity constraint"
+      },
+      {
+        "timestamp": "2026-09-23T06:00:00+05:30",
+        "code": "RBK",
+        "location": "BOM",
+        "note": "Rebooked on SC 118"
+      }
+    ]
+  },
+  {
+    "awb": "842-34567890",
+    "origin": "DEL",
+    "destination": "BLR",
+    "cargo_type": "perishable",
+    "pieces": 20,
+    "weight_kg": 450,
+    "shipper": "Himalayan Orchards",
+    "consignee": "FreshCart Bengaluru",
+    "status": "delivered",
+    "eta": "2026-09-20T11:00:00+05:30",
+    "flight": "SC 502",
+    "events": [
+      {
+        "timestamp": "2026-09-19T18:00:00+05:30",
+        "code": "RCS",
+        "location": "DEL",
+        "note": "Received"
+      },
+      {
+        "timestamp": "2026-09-20T05:10:00+05:30",
+        "code": "DEP",
+        "location": "DEL",
+        "note": "Departed Delhi"
+      },
+      {
+        "timestamp": "2026-09-20T08:05:00+05:30",
+        "code": "ARR",
+        "location": "BLR",
+        "note": "Arrived Bengaluru"
+      },
+      {
+        "timestamp": "2026-09-20T12:30:00+05:30",
+        "code": "DLV",
+        "location": "BLR",
+        "note": "Delivered to consignee, signed R. Kumar"
+      }
+    ]
+  },
+  {
+    "awb": "842-45678905",
+    "origin": "SIN",
+    "destination": "MAA",
+    "cargo_type": "valuable",
+    "pieces": 1,
+    "weight_kg": 8,
+    "shipper": "Lion City Jewellers",
+    "consignee": "Chennai Gold House",
+    "status": "customs_hold",
+    "eta": "2026-09-24T16:00:00+05:30",
+    "flight": "SC 77",
+    "hold_reason": "Commercial invoice missing HS code; customs awaiting corrected invoice",
+    "events": [
+      {
+        "timestamp": "2026-09-23T09:00:00+08:00",
+        "code": "DEP",
+        "location": "SIN",
+        "note": "Departed Singapore"
+      },
+      {
+        "timestamp": "2026-09-23T11:15:00+05:30",
+        "code": "ARR",
+        "location": "MAA",
+        "note": "Arrived Chennai"
+      },
+      {
+        "timestamp": "2026-09-23T13:00:00+05:30",
+        "code": "CUS",
+        "location": "MAA",
+        "note": "Held by customs, documentation query"
+      }
+    ]
+  },
+  {
+    "awb": "842-56789014",
+    "origin": "FRA",
+    "destination": "BOM",
+    "cargo_type": "general",
+    "pieces": 6,
+    "weight_kg": 210,
+    "shipper": "Rhein Maschinenbau GmbH",
+    "consignee": "Konkan Engineering Works",
+    "status": "arrived",
+    "eta": "2026-09-24T02:00:00+05:30",
+    "flight": "SC 901",
+    "damage_reported": true,
+    "events": [
+      {
+        "timestamp": "2026-09-22T19:00:00+02:00",
+        "code": "DEP",
+        "location": "FRA",
+        "note": "Departed Frankfurt"
+      },
+      {
+        "timestamp": "2026-09-24T01:40:00+05:30",
+        "code": "ARR",
+        "location": "BOM",
+        "note": "Arrived Mumbai"
+      },
+      {
+        "timestamp": "2026-09-24T04:30:00+05:30",
+        "code": "DIS",
+        "location": "BOM",
+        "note": "Discrepancy: 1 of 6 pcs crate damaged at breakdown"
+      }
+    ]
+  },
+  {
+    "awb": "842-67890126",
+    "origin": "BLR",
+    "destination": "JFK",
+    "cargo_type": "general",
+    "pieces": 2,
+    "weight_kg": 35,
+    "shipper": "Koramangala Designs",
+    "consignee": "Brooklyn Home Studio",
+    "status": "booked",
+    "eta": "2026-09-29T18:00:00-04:00",
+    "flight": "SC 1 via DXB",
+    "events": [
+      {
+        "timestamp": "2026-09-24T09:00:00+05:30",
+        "code": "BKD",
+        "location": "BLR",
+        "note": "Booking confirmed, awaiting drop-off"
+      }
+    ]
+  }
+]

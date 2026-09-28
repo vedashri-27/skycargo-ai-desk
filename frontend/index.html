@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SkyCargo support desk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.platform.openai.com/deployments/chatkit/chatkit.js" async></script>
+  <style>
+    :root {
+      --ink: #16263d;        /* night apron navy */
+      --board: #1e3150;      /* flap cell */
+      --board-line: #2b4268;
+      --signal: #f5c518;     /* airport signage yellow */
+      --paper: #f3f5f2;      /* air waybill paper */
+      --muted: #8a97a8;
+      --route: #2f6fdf;      /* chat accent */
+      --display: "Barlow Condensed", "Arial Narrow", sans-serif;
+      --body: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: var(--body);
+      background: var(--paper);
+      color: var(--ink);
+      display: grid;
+      grid-template-columns: minmax(300px, 380px) 1fr;
+    }
+
+    .board {
+      background: var(--ink);
+      color: #dfe6ef;
+      padding: 28px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      overflow-y: auto;
+    }
+    .brand h1 {
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: 2.1rem;
+      line-height: 1;
+      letter-spacing: 0.01em;
+      margin: 0 0 6px;
+      color: #fff;
+    }
+    .brand p { margin: 0; color: var(--muted); font-size: 0.95rem; line-height: 1.45; max-width: 34ch; }
+
+    .flaps h2 {
+      font-family: var(--display);
+      font-weight: 600;
+      font-size: 1.05rem;
+      color: var(--muted);
+      margin: 0 0 10px;
+    }
+    .flaps ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+    .flap {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 2px 12px;
+      text-align: left;
+      background: var(--board);
+      border: 1px solid var(--board-line);
+      border-radius: 4px;
+      padding: 10px 12px;
+      color: inherit;
+      font: inherit;
+      cursor: pointer;
+    }
+    .flap:hover { border-color: var(--signal); }
+    .flap:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; }
+    .flap .awb {
+      font-family: var(--display);
+      font-weight: 600;
+      font-size: 1.2rem;
+      letter-spacing: 0.06em;
+      color: var(--signal);
+      font-variant-numeric: tabular-nums;
+    }
+    .flap .route { font-family: var(--display); font-size: 1.05rem; color: #fff; justify-self: end; }
+    .flap .what { grid-column: 1 / -1; font-size: 0.85rem; color: var(--muted); }
+
+    .foot { margin-top: auto; font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+
+    main { min-width: 0; height: 100vh; }
+    openai-chatkit { display: block; height: 100%; width: 100%; }
+
+    .offline {
+      display: none;
+      margin: 24px;
+      padding: 16px 18px;
+      border-left: 4px solid var(--signal);
+      background: #fff;
+      max-width: 60ch;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 820px) {
+      body { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+      .board { padding: 16px; gap: 12px; }
+      .brand p, .foot { display: none; }
+      .flaps ul { grid-auto-flow: column; grid-auto-columns: 78%; overflow-x: auto; padding-bottom: 4px; }
+      main { height: auto; min-height: 70vh; }
+    }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  </style>
+</head>
+<body>
+  <aside class="board" aria-label="Demo shipments">
+    <div class="brand">
+      <h1>SkyCargo support desk</h1>
+      <p>Track air waybills, price airport-to-airport freight, book shipments, and raise claims.</p>
+    </div>
+
+    <section class="flaps">
+      <h2>Demo shipments, tap one to track it</h2>
+      <ul id="flaps"></ul>
+    </section>
+
+    <p class="foot">Sample data only. Quotes are in INR and computed from the rate card in data/rates.json.</p>
+  </aside>
+
+  <main>
+    <openai-chatkit id="chat"></openai-chatkit>
+    <div class="offline" id="offline">
+      The chat component didn't load. Check your internet connection, then reload the page.
+    </div>
+  </main>
+
+  <script type="module">
+    const DEMO = [
+      { awb: "842-12345675", route: "PNQ – DXB", what: "In transit, auto parts" },
+      { awb: "842-23456786", route: "BOM – LHR", what: "Delayed pharma, ask about compensation" },
+      { awb: "842-45678905", route: "SIN – MAA", what: "Held by customs" },
+      { awb: "842-56789014", route: "FRA – BOM", what: "Arrived with a damaged crate" },
+      { awb: "842-34567890", route: "DEL – BLR", what: "Delivered perishables" },
+    ];
+
+    // Demo identity: a random id per browser. Replace with real auth in production.
+    function userId() {
+      try {
+        let id = localStorage.getItem("skycargo-user");
+        if (!id) { id = "u_" + crypto.randomUUID().replaceAll("-", ""); localStorage.setItem("skycargo-user", id); }
+        return id;
+      } catch { return "u_" + crypto.randomUUID().replaceAll("-", ""); }
+    }
+    const USER_ID = userId();
+
+    const chat = document.getElementById("chat");
+    const list = document.getElementById("flaps");
+
+    for (const d of DEMO) {
+      const li = document.createElement("li");
+      const btn = document.createElement("button");
+      btn.className = "flap";
+      btn.type = "button";
+      btn.innerHTML = `<span class="awb">${d.awb}</span><span class="route">${d.route}</span><span class="what">${d.what}</span>`;
+      btn.addEventListener("click", () => chat.sendUserMessage({ text: `Where is my shipment ${d.awb}?` }));
+      li.append(btn);
+      list.append(li);
+    }
+
+    await customElements.whenDefined("openai-chatkit").catch(() => {});
+    setTimeout(() => {
+      if (!customElements.get("openai-chatkit")) document.getElementById("offline").style.display = "block";
+    }, 8000);
+
+    chat.setOptions({
+      api: {
+        url: "/chatkit",
+        // Any value works on localhost. For a deployed domain, register it in the
+        // OpenAI dashboard's domain allowlist and paste the key it gives you.
+        domainKey: "domain_pk_localhost_dev",
+        fetch: (input, init = {}) =>
+          fetch(input, { ...init, headers: { ...(init.headers || {}), "x-user-id": USER_ID } }),
+      },
+      theme: {
+        colorScheme: "light",
+        radius: "soft",
+        density: "normal",
+        color: { accent: { primary: "#2f6fdf", level: 1 } },
+        typography: { fontFamily: "Barlow, system-ui, sans-serif" },
+      },
+      startScreen: {
+        greeting: "What do you need help with today?",
+        prompts: [
+          { label: "Track a shipment", prompt: "Where is my shipment 842-12345675?", icon: "search" },
+          { label: "Get a price", prompt: "How much to send 150 kg of general cargo from Pune to Dubai?", icon: "sparkle" },
+          { label: "Report damage", prompt: "My shipment 842-56789014 arrived with a broken crate. What can I do?", icon: "circle-question" },
+          { label: "Customs hold", prompt: "Why is 842-45678905 stuck in customs?", icon: "document" },
+        ],
+      },
+      composer: { placeholder: "Type an AWB number or describe your issue" },
+    });
+
+    chat.addEventListener("chatkit.error", (e) => console.error("ChatKit error", e.detail.error));
+  </script>
+</body>
+</html>

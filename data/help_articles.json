@@ -1,0 +1,108 @@
+[
+  {
+    "id": "KB-101",
+    "title": "Delay compensation policy",
+    "tags": [
+      "delay",
+      "late",
+      "compensation",
+      "refund",
+      "offload"
+    ],
+    "content": "If a shipment arrives more than 24 hours after the confirmed ETA for reasons within SkyCargo's control (offload, capacity, missed connection), the customer may request a credit of 10% of freight charges, rising to 25% beyond 72 hours. Delays caused by weather, customs holds, or incorrect shipper documentation are not eligible. Requests must be raised within 14 days of delivery via a support ticket of category 'delay'."
+  },
+  {
+    "id": "KB-102",
+    "title": "Damage and loss claims",
+    "tags": [
+      "damage",
+      "damaged",
+      "broken",
+      "loss",
+      "lost",
+      "claim",
+      "missing"
+    ],
+    "content": "Damage must be noted on the delivery receipt or reported within 14 days of delivery; loss claims within 120 days of the AWB issue date. Customers should provide photos, the packing list, and the commercial invoice. Liability is limited to 22 SDR per kg under the Montreal Convention unless a higher value was declared at booking. Raise a support ticket of category 'damage' or 'loss' with the AWB number."
+  },
+  {
+    "id": "KB-103",
+    "title": "Customs holds and documentation",
+    "tags": [
+      "customs",
+      "hold",
+      "invoice",
+      "hs code",
+      "documents",
+      "clearance"
+    ],
+    "content": "Customs may hold cargo when the commercial invoice, packing list, or HS codes are missing or inconsistent. The consignee or their customs broker must submit corrected documents to the destination customs authority; SkyCargo cannot release held cargo. Storage charges start 48 hours after arrival. Support can share the exact query raised by customs."
+  },
+  {
+    "id": "KB-104",
+    "title": "Dangerous goods acceptance",
+    "tags": [
+      "dangerous",
+      "dg",
+      "battery",
+      "lithium",
+      "hazardous",
+      "chemicals",
+      "flammable"
+    ],
+    "content": "Dangerous goods require a Shipper's Declaration for Dangerous Goods, UN-specification packaging, and correct labels per IATA DGR. Lithium batteries shipped alone (UN3480) are cargo-aircraft only. DG bookings are always reviewed by the DG desk before confirmation, and online quotes for DG are indicative only."
+  },
+  {
+    "id": "KB-105",
+    "title": "Chargeable weight and volumetric weight",
+    "tags": [
+      "weight",
+      "volumetric",
+      "chargeable",
+      "dimensions",
+      "size",
+      "price"
+    ],
+    "content": "Air freight is charged on the greater of actual weight and volumetric weight. Volumetric weight in kg equals length × width × height in centimetres divided by 6000, per piece. Light but bulky cargo is therefore charged by volume."
+  },
+  {
+    "id": "KB-106",
+    "title": "Perishable and pharma cold chain",
+    "tags": [
+      "perishable",
+      "pharma",
+      "cold",
+      "temperature",
+      "vaccine",
+      "fresh",
+      "flowers"
+    ],
+    "content": "Perishable and pharma cargo is handled in temperature-controlled zones. Pharma shipments must state the required range (for example 2-8°C or 15-25°C) at booking. Temperature excursion reports are available on request via a support ticket of category 'temperature'."
+  },
+  {
+    "id": "KB-107",
+    "title": "Changing or cancelling a booking",
+    "tags": [
+      "cancel",
+      "change",
+      "modify",
+      "reschedule",
+      "booking"
+    ],
+    "content": "Bookings can be changed or cancelled free of charge until cargo is received at origin (status 'booked'). After acceptance, cancellation incurs a handling fee of INR 1500 plus any storage charges. Changes of destination after departure are not possible."
+  },
+  {
+    "id": "KB-108",
+    "title": "Tracking statuses explained",
+    "tags": [
+      "status",
+      "tracking",
+      "rcs",
+      "dep",
+      "arr",
+      "dlv",
+      "meaning"
+    ],
+    "content": "Common status codes: BKD booked, RCS received from shipper, MAN manifested, DEP departed, ARR arrived, CUS customs hold, OFLD offloaded, RBK rebooked, DIS discrepancy reported, DLV delivered."
+  }
+]
