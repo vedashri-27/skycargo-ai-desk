@@ -1,52 +1,42 @@
 # SkyCargo AI Support Desk
 
-An AI customer support agent for an airport-to-airport air freight company. Customers can track
-Air Waybills, get freight quotes, book shipments, understand policies, and raise damage or delay
-claims, all in one chat with live cards for shipments, quotes, bookings, and tickets.
+An AI customer support agent I built for an airport-to-airport air freight company. Customers can track Air Waybills (AWBs), get freight quotes, book shipments, understand policies, and raise damage or delay claims, all in one chat, with live cards for shipments, quotes, bookings, and support tickets.
 
-Built with a self-hosted **OpenAI ChatKit** server, the **OpenAI Agents SDK**, **FastAPI**, and
-**SQLite**.
+**Tech stack:** Python, FastAPI, OpenAI Agents SDK, self-hosted OpenAI ChatKit server, SQLite, pytest
+
+---
 
 ## What it does
 
 | Customer asks | What happens |
 |---|---|
-| "Where is 842-12345675?" | Validates the AWB check digit, looks it up, shows a tracking card |
-| "Price for 150 kg PNQ to DXB" | Computes chargeable weight (actual vs volumetric), applies the rate card, shows a quote card |
-| "Book it" | Restates the details, waits for an explicit yes, then creates a booking with a real-format AWB |
-| "My crate arrived broken" | Retrieves the claims policy, explains it, opens a prioritised ticket with an SLA |
-| "Can I ship lithium batteries?" | Explains dangerous goods rules and routes to the DG desk instead of booking |
+| "Where is 842-12345675?" | Validates the AWB check digit, looks up the shipment, and shows a tracking card |
+| "Price for 150 kg PNQ to DXB" | Computes chargeable weight (actual vs volumetric), applies the rate card, and shows a quote card |
+| "Book it" | Restates the booking details, waits for an explicit "yes", then creates a booking with a real-format AWB |
+| "My crate arrived broken" | Retrieves the claims policy, explains it, and opens a prioritised support ticket with an SLA |
+| "Can I ship lithium batteries?" | Explains the dangerous goods (DG) rules and routes the request to the DG desk instead of booking |
+
+---
 
 ## Architecture
 
-```mermaid
-flowchart LR
-  UI[Browser: ChatKit web component] -- POST /chatkit, SSE --> API[FastAPI]
-  API --> S[SkyCargoServer: ChatKitServer]
-  S --> ST[(SQLiteStore: threads and messages)]
-  S --> A[Agents SDK: support agent]
-  A --> T[Tools]
-  T --> SV[services.py: tracking, pricing, booking, tickets, KB search]
-  SV --> OPS[(SQLite ops DB)]
-  SV --> D[data/*.json]
-  T -- widgets and progress --> S
-```
-
 | File | Role |
 |---|---|
-| `app/main.py` | FastAPI app. `/chatkit` endpoint, per-user request context, serves the page |
-| `app/server.py` | `ChatKitServer.respond`: loads history, runs the agent, streams events |
+| `app/main.py` | FastAPI app: `/chatkit` endpoint, per-user request context, and serves the web page |
+| `app/server.py` | `ChatKitServer.respond`: loads conversation history, runs the agent, and streams events |
 | `app/agent.py` | Agent instructions: grounding rules, booking confirmation, DG and claims handling |
-| `app/tools.py` | Six function tools. Stream widgets and progress updates into the chat |
-| `app/services.py` | Pure business logic, no LLM. Fully unit tested |
+| `app/tools.py` | Six function tools that stream widgets and progress updates into the chat |
+| `app/services.py` | Pure business logic with no LLM involvement, fully unit tested |
 | `app/widgets.py` | Tracking, quote, booking, and ticket cards |
-| `app/store.py` | Durable ChatKit `Store` on SQLite with JSON blobs, threads scoped per user |
-| `evals/` | Behavioural evals: did the agent call the right tools and say the right things |
-| `tests/` | 26 unit tests for pricing, AWB validation, bookings, tickets, retrieval, store isolation |
+| `app/store.py` | Durable ChatKit store on SQLite with JSON blobs, with threads scoped per user |
+| `evals/` | Behavioural evals that check whether the agent called the right tools and gave the right answers |
+| `tests/` | 26 unit tests covering pricing, AWB validation, bookings, tickets, retrieval, and store isolation |
 
-## Run it
+---
 
-You need Python 3.11+ and an API key from OpenAI, or a free one from Google Gemini (see below).
+## Getting started
+
+**Requirements:** Python 3.11+ and an API key from OpenAI, or a free key from Google Gemini (see below).
 
 ```bash
 python -m venv .venv
@@ -55,18 +45,17 @@ python -m venv .venv
 pip install -r requirements.txt
 
 cp .env.example .env        # Windows: copy .env.example .env
-# put your OPENAI_API_KEY in .env
+# add your OPENAI_API_KEY to .env
 
-pytest                      # 26 tests, no API key needed
+pytest                      # runs the 26 unit tests, no API key needed
 uvicorn app.main:app --reload
 ```
 
-Open http://localhost:8000 and tap a shipment on the left board, or type your own question.
+Open http://localhost:8000, then tap a shipment on the board on the left or type your own question.
 
-### Run it for free with Google Gemini
+### Running it for free with Google Gemini
 
-Gemini offers an OpenAI-compatible endpoint with a free tier (no credit card). Create a key at
-https://aistudio.google.com/apikey, then set these in `.env`:
+Gemini offers an OpenAI-compatible endpoint with a free tier (no credit card required). Create a key at https://aistudio.google.com/apikey, then set these values in `.env`:
 
 ```
 OPENAI_API_KEY=your-gemini-key
@@ -74,61 +63,54 @@ OPENAI_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/
 OPENAI_MODEL=gemini-3.6-flash
 ```
 
-When `OPENAI_BASE_URL` is set, `app/agent.py` points the Agents SDK at that provider, switches to
-the Chat Completions API, and turns off OpenAI tracing. The model name must be one listed in Google
-AI Studio for your key. The free tier has rate limits, so wait a minute if you see a 429 error.
+When `OPENAI_BASE_URL` is set, `app/agent.py` points the Agents SDK at that provider, switches to the Chat Completions API, and turns off OpenAI tracing. The model name must be one that Google AI Studio lists for your key. The free tier is rate limited, so if you see a 429 error, wait a minute and try again.
 
-Run the evals (uses the API, costs a little):
+### Running the evals
+
+The evals call the model API, so they cost a small amount to run.
 
 ```bash
 python -m evals.run_evals
 ```
 
-## Demo script (2 minutes, good for interviews)
+---
 
-1. Tap **842-23456786** (delayed pharma). Ask "Do I get compensation?" The agent tracks it, pulls the
-   delay policy, and explains the 10% credit rule without over-promising.
-2. Ask "Quote 150 kg, 4 boxes of 80×60×60 cm, Pune to London." Point out that the volumetric weight
-   wins over actual weight, which is how real air freight is priced.
-3. Say "Book it for Deccan Exports to Thames Imports, ready tomorrow." Show that it asks for
-   confirmation first. Say yes, then track the new AWB it created.
-4. Ask "Can I send lithium batteries?" Show it refuses to book and routes to the DG desk.
-5. Run `python -m evals.run_evals` and show the pass rate.
+## Demo walkthrough
 
-## Design decisions worth talking about
+1. **Delay claim:** Tap `842-23456786` (a delayed pharma shipment) and ask *"Do I get compensation?"* The agent tracks the shipment, pulls the delay policy, and explains the 10% credit rule without over-promising.
+2. **Volumetric pricing:** Ask *"Quote 150 kg, 4 boxes of 80×60×60 cm, Pune to London."* The volumetric weight is higher than the actual weight, so it is used for pricing, which is how real air freight is priced.
+3. **Safe booking:** Say *"Book it for Deccan Exports to Thames Imports, ready tomorrow."* The agent asks for confirmation before booking. Reply "yes", then track the new AWB it created.
+4. **Dangerous goods:** Ask *"Can I send lithium batteries?"* The agent declines to book and routes the request to the DG desk.
+5. **Evals:** Run `python -m evals.run_evals` to see the pass rate.
 
-- **Business logic is separate from the LLM.** Pricing, validation, and booking rules live in plain
-  Python with unit tests. The model decides *what* to do; code decides *how much it costs*. This is
-  how you stop an LLM from inventing prices.
-- **Tools return errors instead of raising**, so the model can recover and ask the user to fix an
-  AWB rather than crashing the turn.
-- **Human-in-the-loop for irreversible actions.** Booking requires an explicit confirmation, and an
-  eval checks that it never books on the first message.
-- **Durable, per-user chat storage** following the ChatKit guidance of JSON blobs, so upgrading the
-  library doesn't need migrations.
-- **Evals over vibes.** Tool-choice checks catch regressions when you change the prompt or model.
+---
 
-## Next steps to level it up
+## Design decisions
 
-Each of these is a good commit and a good interview story.
+- **Business logic is separate from the LLM.** Pricing, validation, and booking rules live in plain Python and are covered by unit tests. The model decides *what* to do; the code decides *how much* it costs. This stops the model from inventing prices.
+- **Tools return errors instead of raising exceptions.** This lets the model recover gracefully, for example by asking the customer to correct an AWB instead of failing the whole turn.
+- **Human-in-the-loop for irreversible actions.** Bookings require explicit confirmation, and an eval checks that the agent never books on the first message.
+- **Durable, per-user chat storage.** Conversations are stored as JSON blobs, following the ChatKit guidance, so upgrading the library doesn't require database migrations. Each user can only see their own threads.
+- **Evals over vibes.** Tool-choice checks catch regressions whenever the prompt or model changes.
 
-1. **Real RAG.** Replace keyword search in `search_help_articles` with embeddings in pgvector or
-   Chroma, add 30+ longer policy documents, and measure retrieval hit rate with the eval set.
-2. **Guardrails.** Add an Agents SDK input guardrail that blocks prompt injection and off-topic use
-   before the main model runs.
-3. **Auth.** Replace the demo `x-user-id` header with real login (JWT), and only show a customer
-   their own shipments.
-4. **Handoffs.** Split into a triage agent that hands off to a claims agent and a sales agent.
-5. **Attachments.** Enable ChatKit uploads so customers can attach damage photos to claims.
-6. **Observability.** Add tracing (the Agents SDK has it built in) and log cost and latency per turn.
-7. **Deploy.** Add a Dockerfile, deploy to Render, Railway, or a cloud free tier, and register your
-   domain in the OpenAI domain allowlist to get a real `domainKey`.
-8. **Widget templates.** ChatKit now prefers `.widget` template files over the widget classes used
-   here. Migrating is a good small task.
+---
 
-## Switching the domain (real estate version)
+## Roadmap
 
-The structure stays the same; only data and tools change.
+- **Retrieval-augmented generation (RAG):** Replace the keyword search in `search_help_articles` with embeddings in pgvector or Chroma, add 30+ longer policy documents, and measure the retrieval hit rate with the eval set.
+- **Guardrails:** Add an Agents SDK input guardrail that blocks prompt injection and off-topic requests before the main model runs.
+- **Authentication:** Replace the demo `x-user-id` header with real login (JWT), so each customer only sees their own shipments.
+- **Agent handoffs:** Split the agent into a triage agent that hands off to a claims agent and a sales agent.
+- **Attachments:** Enable ChatKit uploads so customers can attach damage photos to claims.
+- **Observability:** Turn on the Agents SDK's built-in tracing and log cost and latency per turn.
+- **Deployment:** Add a Dockerfile, deploy to Render, Railway, or a cloud free tier, and register the domain in the OpenAI domain allowlist to get a real `domainKey`.
+- **Widget templates:** Migrate from the widget classes used here to ChatKit's newer `.widget` template files.
+
+---
+
+## Adapting to other domains
+
+The architecture is domain-agnostic: only the data and tools change. For example, a real estate support version would map like this:
 
 | Air cargo | Real estate support |
 |---|---|
@@ -139,16 +121,11 @@ The structure stays the same; only data and tools change.
 | `create_support_ticket` (damage, delay) | `raise_maintenance_request` (plumbing, electrical) |
 | Help centre: claims, customs, DG | Help centre: deposits, RERA rules, notice periods |
 
-## Resume bullets
+---
 
-- Built an AI customer support agent for an air freight use case using OpenAI ChatKit (self-hosted),
-  the Agents SDK, and FastAPI, with 6 function tools for tracking, pricing, booking, and claims.
-- Implemented durable per-user conversation storage on SQLite and streamed rich UI cards and progress
-  updates into the chat.
-- Kept pricing and validation logic out of the LLM with 26 unit tests, and wrote a behavioural eval
-  suite checking tool choice and safe behaviour (no booking without confirmation, DG escalation).
+## Author
 
-Replace these with your own numbers once you have them, such as eval pass rate or retrieval
-accuracy after adding embeddings.
+**Vedashri Kshirsagar**
+[LinkedIn](https://www.linkedin.com/in/vedashri-k) · vedashriak2711@gmail.com
 
-All company names, AWBs, rates, and policies in `data/` are fictional.
+*All company names, AWBs, rates, and policies in `data/` are fictional.*
