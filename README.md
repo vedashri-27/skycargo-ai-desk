@@ -139,7 +139,7 @@ The structure stays the same; only data and tools change.
 | `create_support_ticket` (damage, delay) | `raise_maintenance_request` (plumbing, electrical) |
 | Help centre: claims, customs, DG | Help centre: deposits, RERA rules, notice periods |
 
-## Resume bullets (only after you've built and understood it)
+## Resume bullets
 
 - Built an AI customer support agent for an air freight use case using OpenAI ChatKit (self-hosted),
   the Agents SDK, and FastAPI, with 6 function tools for tracking, pricing, booking, and claims.
